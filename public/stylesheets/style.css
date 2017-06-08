@@ -6,3 +6,30 @@ body {
 a {
   color: #00B7FF;
 }
+
+.calendar {
+  margin: 0 auto;
+  width: 1200px;
+}
+
+.month {
+  float: left;
+  width: 280px;
+}
+
+.day {
+  box-sizing: border-box;
+  float: left;
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  text-align: center;
+}
+
+.day--weekend {
+  background-color: #DABECA;
+}
+
+.day--today {
+  border: 1px solid;
+}

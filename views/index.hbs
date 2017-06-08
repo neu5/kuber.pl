@@ -1,4 +1,11 @@
-<p>{{now}}</p>
-<div>
-    {{#each months}}{{days}}{{/each}}
+<div class="calendar">
+    <p>{{today}}</p>
+    {{#each months}}
+    <div class="month">
+        <div>{{name}}</div>
+        {{#each days}}
+            <div class="day {{className}}">{{day}}</div>
+        {{/each}}
+    </div>
+    {{/each}}
 </div>

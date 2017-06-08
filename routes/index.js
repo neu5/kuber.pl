@@ -1,28 +1,75 @@
-var express = require('express');
-var moment = require('moment');
-var data = require('../data.json');
+const express = require('express');
+const moment = require('moment');
+const data = require('../data.json');
 
-var router = express.Router();
+const router = express.Router();
 
-function getMonths() {
-  const currentYear = moment().year().toString();
+const m = moment();
+const year = m.year();
 
-  return Array.apply(null, {length: 12}).map(Number.call, Number)
-    .map(idx => {
-      const month = ++idx;
+const months = [
+  { daysNum: 31 },
+  { daysNum: m.isLeapYear() ? 29 : 28 },
+  { daysNum: 31 },
+  { daysNum: 30 },
+  { daysNum: 31 },
+  { daysNum: 30 },
+  { daysNum: 31 },
+  { daysNum: 31 },
+  { daysNum: 30 },
+  { daysNum: 31 },
+  { daysNum: 30 },
+  { daysNum: 31 }
+];
 
-      return {
-        days: moment(`${currentYear}-${month.toString()}`, 'YYYY-MM').daysInMonth()
-      };
-    });
+function isToday(today) {
+  return moment(today, 'YYYY-MM-DD').isSame(m, 'day') ? 'day--today' : '';
 }
 
-const months = getMonths();
+function getDay(i, firstDayOfMonth, shiftedDay, daysNum) {
+  return i >= firstDayOfMonth && shiftedDay <= daysNum ? shiftedDay.toString() : '';
+}
 
-router.get('/', function(req, res, next) {
+function getMonthGrid(month, monthNum, daysToRender = 7, weeksToRender = 6) {
+  const grid = [];
+  const daysNum = month.daysNum;
+  const firstDayOfMonth = moment([year, monthNum]).format('E');
+  
+  let day = '';
+  let i = 1;
+
+  for (let col = 0; col < weeksToRender; col++) {
+    for (let row = 0; row < daysToRender; row++) {
+      let shiftedDay = i - firstDayOfMonth + 1;
+      let day = getDay(i, firstDayOfMonth, shiftedDay, daysNum);
+
+      grid.push({
+        day,
+        className: (row > 4 ? 'day--weekend' : '') + ' ' + isToday(`${year}-${monthNum + 1}-${day}`)
+      });
+
+      i++;
+    }
+  }
+
+  return grid;
+}
+
+function getDays(months) {
+  return months.map((month, idx) => {
+    return Object.assign(month, {
+      name: moment.months()[idx],
+      days: getMonthGrid(month, idx)
+    });
+  });
+}
+
+const days = getDays(months);
+
+router.get('/', function(req, res) {
   res.render('index', { 
-    now: moment().format('DD-MM-YYYY'),
-    months: months
+    today: m.format('DD-MM-YYYY'),
+    months: months,
   });
 });
 
