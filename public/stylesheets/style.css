@@ -9,8 +9,26 @@ a {
 
 .calendar {
   margin: 0 auto;
+  overflow: hidden;
   width: 1200px;
 }
+
+.calendar__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+  .calendar__legend li {
+    line-height: 20px;
+    margin: 4px 0;
+  }
+    .calendar__legend li span {
+      display: block;
+      float: left;
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
 
 .month {
   float: left;
@@ -26,10 +44,19 @@ a {
   text-align: center;
 }
 
-.day--weekend {
+.color__weekend {
   background-color: #DABECA;
 }
-
-.day--today {
+.color__today {
   border: 1px solid;
+}
+.color__maybe {
+  background-color: #B0DDFF;
+  border: 1px dashed;
+}
+.color__available {
+  background-color: #D4FFBF;
+}
+.color__full {
+  background-color: #FFE3AC;
 }

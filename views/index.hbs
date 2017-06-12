@@ -1,6 +1,20 @@
 <div class="calendar">
     <p>{{today}}</p>
-    {{#each months}}
+    <ul class="calendar__legend">
+        <li>
+            <span class="color__today"></span> - today
+        </li>
+        <li>
+            <span class="color__maybe"></span> - maybe
+        </li>
+        <li>
+            <span class="color__available"></span> - available
+        </li>
+        <li>
+            <span class="color__full"></span> - full
+        </li>
+    </ul>
+    {{#each calendar}}
     <div class="month">
         <div>{{name}}</div>
         {{#each days}}
