@@ -1,9 +1,9 @@
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+
 const express = require('express');
 const moment = require('moment');
-
-require('dotenv').config();
-
 const contentful = require('contentful');
+
 const router = express.Router();
 
 const client = contentful.createClient({
