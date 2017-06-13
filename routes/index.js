@@ -111,7 +111,7 @@ function getCalendar() {
   });
 }
 
-var fetchData = function (req, res, next) {
+function fetchData (req, res, next) {
   client.getEntries()
     .then(data => {
       setData(data.items.map(item => item.fields));
