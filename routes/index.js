@@ -30,7 +30,6 @@ function getDay(i, firstDayOfMonth, shiftedDay, daysNum) {
   return i >= firstDayOfMonth && shiftedDay <= daysNum ? shiftedDay.toString() : '';
 }
 
-
 function getClassNames(row, monthNum, day) {
   const currentDay = `${YEAR}-${monthNum + 1}-${day}`;
   let classNames = '';
