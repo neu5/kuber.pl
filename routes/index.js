@@ -1,11 +1,20 @@
 const express = require('express');
 const moment = require('moment');
-const data = require('../data.json');
 
+require('dotenv').config();
+
+const contentful = require('contentful');
 const router = express.Router();
+
+const client = contentful.createClient({
+  space: process.env.SPACE,
+  accessToken: process.env.ACCESS_TOKEN
+});
 
 const m = moment();
 const YEAR = m.year();
+
+let data = [];
 
 const months = [
   { daysNum: 31 },
@@ -21,6 +30,10 @@ const months = [
   { daysNum: 30 },
   { daysNum: 31 }
 ];
+
+function setData(newData) {
+  return data = newData;
+}
 
 function isSameDay(oneDay, secondDay) {
   return moment(oneDay, 'YYYY-MM-DD').isSame(secondDay, 'd');
@@ -41,16 +54,23 @@ function getClassNames(row, monthNum, day) {
   if (isSameDay(`${YEAR}-${monthNum + 1}-${day}`, m)) {
     classNames += ' color__today';
   }
-  // check for days defined in external source
+
+  // check for days taken from external source
   data.forEach(dataDay => {
-    if ((isSameDay(currentDay, moment(dataDay.maybe, 'DD-MM-YYYY')))) {
-      classNames += ' color__maybe';
+    if (!isSameDay(currentDay, moment(dataDay.date, 'YYYY-MM-DD'))) {
+      return;
     }
-    if ((isSameDay(currentDay, moment(dataDay.available, 'DD-MM-YYYY')))) {
-      classNames += ' color__available';
-    }
-    if ((isSameDay(currentDay, moment(dataDay.full, 'DD-MM-YYYY')))) {
-      classNames += ' color__full';
+
+    switch (dataDay.type) {
+      case 'maybe':
+        classNames += ' color__maybe';
+        break;
+      case 'available':
+        classNames += ' color__available';
+        break;
+      case 'full':
+        classNames += ' color__full';
+        break; 
     }
   });
 
@@ -82,7 +102,7 @@ function getMonthGrid(month, monthNum, daysToRender = 7, weeksToRender = 6) {
   return grid;
 }
 
-function getCalendar(months) {
+function getCalendar() {
   return months.map((month, idx) => {
     return Object.assign(month, {
       name: moment.months()[idx],
@@ -91,12 +111,23 @@ function getCalendar(months) {
   });
 }
 
-const calendar = getCalendar(months);
+function fetchData (req, res, next) {
+  client.getEntries()
+    .then(data => {
+      setData(data.items.map(item => item.fields));
+      req.calendar = getCalendar();
+
+      next();
+    })
+    .catch(err => console.log(err));
+}
+
+router.use(fetchData)
 
 router.get('/', function(req, res) {
   res.render('index', { 
     today: m.format('DD-MM-YYYY'),
-    calendar: calendar,
+    calendar: req.calendar
   });
 });
 

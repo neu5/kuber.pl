@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "~1.17.1",
+    "contentful": "^4.4.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.2",
+    "dotenv": "^4.0.0",
     "mocha": "^3.4.2"
   }
 }
