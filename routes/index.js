@@ -1,15 +1,16 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const express = require('express');
+const bluebird = require('bluebird');
+const redis = require('redis');
 const moment = require('moment');
-const contentful = require('contentful');
 
 const router = express.Router();
 
-const client = contentful.createClient({
-  space: process.env.SPACE,
-  accessToken: process.env.ACCESS_TOKEN
-});
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
+
+const redisClient = redis.createClient(process.env.REDIS_URL);
 
 const m = moment();
 const YEAR = m.year();
@@ -112,17 +113,25 @@ function getCalendar() {
 }
 
 function fetchData (req, res, next) {
-  client.getEntries()
-    .then(data => {
-      setData(data.items.map(item => item.fields));
-      req.calendar = getCalendar();
+  redisClient.keysAsync('*')
+    .then(dates => {
+      redisClient.mgetAsync(dates)
+        .then(result => {
+          setData(result.map((type, idx) => {
+            return {
+              type,
+              'date': dates[idx]
+            }
+          }));
 
-      next();
-    })
-    .catch(err => console.log(err));
+          req.calendar = getCalendar();
+
+          next();
+        });
+    });
 }
 
-router.use(fetchData)
+router.use(fetchData);
 
 router.get('/', function(req, res) {
   res.render('index', { 
