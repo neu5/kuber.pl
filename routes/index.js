@@ -115,6 +115,11 @@ function getCalendar() {
 function fetchData (req, res, next) {
   redisClient.keysAsync('*')
     .then(dates => {
+      if (!dates.length) {
+        next();
+        return;
+      }
+
       redisClient.mgetAsync(dates)
         .then(result => {
           setData(result.map((type, idx) => {

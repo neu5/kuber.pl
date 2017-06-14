@@ -35,7 +35,7 @@ function fetchData (req, res, next) {
 
 router.use(fetchData);
 
-router.get('/', function(req, res) {
+router.post('/', function(req, res) {
     res.send('ok');
 });
 
