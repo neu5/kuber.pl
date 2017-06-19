@@ -26,11 +26,16 @@ function fetchData (req, res, next) {
 
       redisClient.flushall();
       
-      dataToSend.forEach(entry => {
-          redisClient.set(entry.date, entry.type);
+      const promisesArr = dataToSend.map(entry => {
+           return redisClient.setAsync(entry.date, entry.type);
       });
 
-      next();
+      bluebird.all(promisesArr)
+        .then(() => {
+            console.log('all promises done');
+
+            next();
+        });
     })
     .catch(err => console.log(err));
 }
