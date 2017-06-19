@@ -1,0 +1,14 @@
+{
+  "name": "Kuber.pl",
+  "description": "Basic calendar of the current year with custom labels",
+  "repository": "https://github.com/neu5/kuber.pl",
+  "keywords": [
+    "node",
+    "heroku",
+    "express",
+    "contentful",
+    "kuber",
+    "kuberpl"
+  ],
+  "image": "heroku/nodejs"
+}
