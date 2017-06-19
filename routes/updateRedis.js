@@ -22,7 +22,9 @@ function fetchData (req, res, next) {
     .then(data => {
       const dataToSend = data.items.map(item => {
           return item.fields;
-      })
+      });
+
+      redisClient.flushall();
       
       dataToSend.forEach(entry => {
           redisClient.set(entry.date, entry.type);
