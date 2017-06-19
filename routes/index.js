@@ -139,7 +139,7 @@ function fetchData (req, res, next) {
 router.use(fetchData);
 
 router.get('/', function(req, res) {
-  res.render('index', { 
+  res.render('pages/index', { 
     today: m.format('DD-MM-YYYY'),
     calendar: req.calendar
   });

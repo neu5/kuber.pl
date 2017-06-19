@@ -22,13 +22,16 @@ function fetchData (req, res, next) {
     .then(data => {
       const dataToSend = data.items.map(item => {
           return item.fields;
-      })
-      
-      dataToSend.forEach(entry => {
-          redisClient.set(entry.date, entry.type);
       });
 
-      next();
+      redisClient.flushall();
+      
+      bluebird.all(dataToSend.map(entry => {
+        return redisClient.setAsync(entry.date, entry.type);
+      }))
+      .then(() => {
+        next();
+      });
     })
     .catch(err => console.log(err));
 }
