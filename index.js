@@ -1,20 +1,21 @@
-const express = require('express');
-const app = express();
+const path = require('path')
+const express = require('express')
+const app = express()
 
-const index = require('./routes/index');
-const updateRedis = require('./routes/updateRedis');
+const index = require('./routes/index')
+const updateRedis = require('./routes/updateRedis')
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 3000))
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, '/public')))
 
 // views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'))
+app.set('view engine', 'ejs')
 
-app.use('/', index);
-app.use('/update-redis', updateRedis);
+app.use('/', index)
+app.use('/update-redis', updateRedis)
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+app.listen(app.get('port'), function () {
+  console.log('Node app is running on port', app.get('port'))
+})

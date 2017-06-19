@@ -1,45 +1,45 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
-const express = require('express');
-const bluebird = require('bluebird');
-const redis = require('redis');
-const contentful = require('contentful');
+const express = require('express')
+const bluebird = require('bluebird')
+const redis = require('redis')
+const contentful = require('contentful')
 
-const router = express.Router();
+const router = express.Router()
 
-bluebird.promisifyAll(redis.RedisClient.prototype);
-bluebird.promisifyAll(redis.Multi.prototype);
+bluebird.promisifyAll(redis.RedisClient.prototype)
+bluebird.promisifyAll(redis.Multi.prototype)
 
-const redisClient = redis.createClient(process.env.REDIS_URL);
+const redisClient = redis.createClient(process.env.REDIS_URL)
 
 const client = contentful.createClient({
   space: process.env.SPACE,
   accessToken: process.env.ACCESS_TOKEN
-});
+})
 
 function fetchData (req, res, next) {
   client.getEntries()
     .then(data => {
       const dataToSend = data.items.map(item => {
-          return item.fields;
-      });
+        return item.fields
+      })
 
-      redisClient.flushall();
-      
+      redisClient.flushall()
+
       bluebird.all(dataToSend.map(entry => {
-        return redisClient.setAsync(entry.date, entry.type);
+        return redisClient.setAsync(entry.date, entry.type)
       }))
       .then(() => {
-        next();
-      });
+        next()
+      })
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
 }
 
-router.use(fetchData);
+router.use(fetchData)
 
-router.post('/', function(req, res) {
-    res.send('ok');
-});
+router.post('/', function (req, res) {
+  res.send('ok')
+})
 
-module.exports = router;
+module.exports = router
