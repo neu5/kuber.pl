@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "standard && mocha tests/**.spec.js",
+    "test": "standard && nyc mocha tests/**.spec.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
