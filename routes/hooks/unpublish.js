@@ -34,7 +34,7 @@ function deleteEntry (req, res, next) {
     .catch(err => console.log(err))
 }
 
-router.use(bodyParser.json())
+router.use(bodyParser.json({type: 'application/vnd.contentful.management.v1+json'}))
 router.use(deleteEntry)
 
 router.post('/', function (req, res) {
