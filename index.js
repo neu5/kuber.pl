@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 
 const index = require('./routes/index')
-const updateRedis = require('./routes/updateRedis')
+const resetRedis = require('./routes/resetRedis')
 
 app.set('port', (process.env.PORT || 3000))
 
@@ -14,7 +14,7 @@ app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs')
 
 app.use('/', index)
-app.use('/update-redis', updateRedis)
+app.use('/reset-redis', resetRedis)
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'))
