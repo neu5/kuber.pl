@@ -18,6 +18,7 @@ const client = contentful.createClient({
 })
 
 function fetchData (req, res, next) {
+  // @todo: make proper error handling
   client.getEntries()
     .then(data => {
       const dataToSend = data.items.map(item => {
@@ -39,7 +40,7 @@ function fetchData (req, res, next) {
 router.use(fetchData)
 
 router.post('/', function (req, res) {
-  res.send('ok')
+  res.sendStatus(200)
 })
 
 module.exports = router
