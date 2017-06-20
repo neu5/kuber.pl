@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "bluebird": "3.5.0",
+    "body-parser": "1.17.2",
     "contentful": "4.4.3",
     "ejs": "2.5.6",
     "express": "4.15.2",
