@@ -1,5 +1,7 @@
 const path = require('path')
 const express = require('express')
+const fs = require('fs')
+const ejs = require('ejs')
 const app = express()
 
 const index = require('./routes/index')
@@ -19,6 +21,14 @@ app.use('/', index)
 app.use('/hook/publish', hookPublish)
 app.use('/hook/unpublish', hookUnpublish)
 app.use('/reset-redis', resetRedis)
+
+const html = ejs.render(fs.readFileSync(path.join('views/pages', 'index.ejs'), 'utf-8'), {
+  today: '123',
+  calendar: []
+}, {
+  filename: path.join('views/pages', 'index.ejs')
+})
+console.log(html)
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'))
