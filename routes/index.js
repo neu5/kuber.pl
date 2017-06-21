@@ -1,21 +1,15 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-
 const express = require('express')
-const bluebird = require('bluebird')
-const redis = require('redis')
 const moment = require('moment')
+const { redis } = require('src/client')
 
 const router = express.Router()
-
-bluebird.promisifyAll(redis.RedisClient.prototype)
-bluebird.promisifyAll(redis.Multi.prototype)
-
-const redisClient = redis.createClient(process.env.REDIS_URL)
 
 const m = moment()
 const YEAR = m.year()
 
-let data = []
+const state = {
+  data: []
+}
 
 const months = [
   { daysNum: 31 },
@@ -31,11 +25,6 @@ const months = [
   { daysNum: 30 },
   { daysNum: 31 }
 ]
-
-function setData (newData) {
-  data = newData
-  return data
-}
 
 function isSameDay (oneDay, secondDay) {
   return moment(oneDay, 'YYYY-MM-DD').isSame(secondDay, 'd')
@@ -58,7 +47,7 @@ function getClassNames (row, monthNum, day) {
   }
 
   // check for days taken from external source
-  data.forEach(dataDay => {
+  state.data.forEach(dataDay => {
     if (!isSameDay(currentDay, moment(dataDay.date, 'YYYY-MM-DD'))) {
       return
     }
@@ -113,21 +102,21 @@ function getCalendar () {
 }
 
 function fetchData (req, res, next) {
-  redisClient.keysAsync('*')
+  redis.keysAsync('*')
     .then(dates => {
       if (!dates.length) {
         next()
         return
       }
 
-      redisClient.mgetAsync(dates)
+      redis.mgetAsync(dates)
         .then(result => {
-          setData(result.map((type, idx) => {
+          state.data = result.map((type, idx) => {
             return {
               type,
               'date': dates[idx]
             }
-          }))
+          })
 
           req.calendar = getCalendar()
 

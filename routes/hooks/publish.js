@@ -1,32 +1,26 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-
 const express = require('express')
 const bodyParser = require('body-parser')
-const bluebird = require('bluebird')
-const redis = require('redis')
+const { CONTENTFUL_CONTENT_TYPE } = require('src/const')
 
 const router = express.Router()
 
-bluebird.promisifyAll(redis.RedisClient.prototype)
-bluebird.promisifyAll(redis.Multi.prototype)
-
-const redisClient = redis.createClient(process.env.REDIS_URL)
+const { redis } = require('src/client')
 
 function setEntry (req, res, next) {
   // @todo: add proper validation and error handling
   if (!req.body) return res.sendStatus(400)
 
-  const fields = req.body.fields
+  const { date, type } = req.body.fields
 
-  redisClient
-    .setAsync(fields.date['en-US'], fields.type['en-US'])
+  redis
+    .setAsync(date['en-US'], type['en-US'])
     .then(() => {
       next()
     })
     .catch(err => console.log(err))
 }
 
-router.use(bodyParser.json({type: 'application/vnd.contentful.management.v1+json'}))
+router.use(bodyParser.json({type: CONTENTFUL_CONTENT_TYPE}))
 router.use(setEntry)
 
 router.post('/', function (req, res) {
