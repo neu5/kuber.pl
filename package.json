@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Basic calendar of the current year with custom labels",
   "engines": {
-    "node": "6.10.2"
+    "node": "6.11.1"
   },
   "main": "index.js",
   "scripts": {
