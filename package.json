@@ -5,13 +5,14 @@
   "engines": {
     "node": "8"
   },
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "test": "standard && nyc mocha tests/**.spec.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
+    "app-module-path": "2.2.0",
     "bluebird": "3.5.0",
     "body-parser": "1.17.2",
     "contentful": "4.4.3",

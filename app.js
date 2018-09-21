@@ -1,3 +1,5 @@
+require('app-module-path').addPath(__dirname)
+
 const path = require('path')
 const express = require('express')
 const app = express()
